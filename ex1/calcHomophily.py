@@ -2,7 +2,14 @@ import os
 import torch
 from torch_geometric.utils import homophily
 from torch_geometric.datasets import HeterophilousGraphDataset
+from torch_geometric.datasets import WebKB
 from torch_geometric.utils import to_scipy_sparse_matrix, from_scipy_sparse_matrix
+import torch.nn as nn
+import torch.optim as optim
+from torch_geometric.datasets import WebKB
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from torch_geometric.utils import to_dense_adj
 
 
 # カレントディレクトリにデータ保存用のフォルダを作成
@@ -12,7 +19,10 @@ if not os.path.exists(data_dir):
 
 # データセットのダウンロードと読み込み
 # "Roman-empire", "Amazon-ratings", "Minesweeper", "Tolokers" and "Questions"
-dataset = HeterophilousGraphDataset(root=data_dir, name='Questions')
+# dataset = HeterophilousGraphDataset(root=data_dir, name='Questions')
+
+# "Cornell", "Texas", "Wisconsin"
+dataset = WebKB(root=data_dir, name="Cornell")
 data = dataset[0]
 
 # 隣接行列を取得 (通常は data.edge_index が入力)
@@ -105,3 +115,4 @@ def compute_homophily_for_n_hop(edge_index, num_nodes, labels):
 
 # 最大3-hopのホモフィリーを計算
 homophily_results = compute_homophily_for_n_hop(data.edge_index, data.num_nodes, data.y)
+
